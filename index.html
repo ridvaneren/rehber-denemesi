@@ -131,6 +131,77 @@
             document.getElementById('phone').value = '';
             document.getElementById('email').value = '';
         }
+        // Mevcut personList'i localStorage'dan yükle
+let personList = JSON.parse(localStorage.getItem('personList')) || [];
+
+function addPerson() {
+    const name = document.getElementById('name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const email = document.getElementById('email').value.trim();
+
+    if (!name || !phone || !email) {
+        alert("Tüm alanları doldurun!");
+        return;
+    }
+
+    const person = { name, phone, email };
+    personList.push(person);
+    saveToLocalStorage(); // Veriyi kaydet
+    renderList();
+    clearForm();
+}
+
+function renderList() {
+    const listContainer = document.getElementById('personList');
+    listContainer.innerHTML = '';
+
+    personList.forEach((person, index) => {
+        const listItem = document.createElement('div');
+        listItem.className = 'list-item';
+
+        listItem.innerHTML = `
+            <div>
+                <strong>${person.name}</strong><br>
+                ${person.phone} - ${person.email}
+            </div>
+            <div>
+                <button class="edit-btn" onclick="editPerson(${index})">Düzenle</button>
+                <button class="delete-btn" onclick="deletePerson(${index})">Sil</button>
+            </div>
+        `;
+
+        listContainer.appendChild(listItem);
+    });
+}
+
+function deletePerson(index) {
+    personList.splice(index, 1);
+    saveToLocalStorage(); // Silme sonrası kaydet
+    renderList();
+}
+
+function editPerson(index) {
+    const person = personList[index];
+    document.getElementById('name').value = person.name;
+    document.getElementById('phone').value = person.phone;
+    document.getElementById('email').value = person.email;
+
+    deletePerson(index); // Eski kaydı düzenleme için kaldır
+}
+
+function clearForm() {
+    document.getElementById('name').value = '';
+    document.getElementById('phone').value = '';
+    document.getElementById('email').value = '';
+}
+
+function saveToLocalStorage() {
+    localStorage.setItem('personList', JSON.stringify(personList));
+}
+
+// Sayfa yüklendiğinde listeyi göster
+window.onload = renderList;
+
     </script>
 </body>
 </html>
