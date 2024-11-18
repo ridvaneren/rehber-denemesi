@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kişi Bilgileri</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+        .form-container {
+            margin-bottom: 20px;
+        }
+        .form-container input {
+            margin: 5px 0;
+            display: block;
+            padding: 10px;
+            width: 100%;
+        }
+        .form-container button {
+            padding: 10px;
+            width: 100%;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .form-container button:hover {
+            background-color: #0056b3;
+        }
+        .list-container {
+            margin-top: 20px;
+        }
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+        .list-item button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .list-item .edit-btn {
+            background-color: #FFC107;
+            color: black;
+        }
+        .list-item .delete-btn {
+            background-color: #DC3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Kişi Bilgileri</h1>
+
+    <div class="form-container">
+        <input type="text" id="name" placeholder="Ad Soyad">
+        <input type="text" id="phone" placeholder="Telefon Numarası">
+        <input type="email" id="email" placeholder="E-posta Adresi">
+        <button onclick="addPerson()">Kaydet</button>
+    </div>
+
+    <div class="list-container" id="personList">
+        <!-- Listeler buraya eklenecek -->
+    </div>
+
+    <script>
+        let personList = [];
+
+        function addPerson() {
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
+
+            if (!name || !phone || !email) {
+                alert("Tüm alanları doldurun!");
+                return;
+            }
+
+            const person = { name, phone, email };
+            personList.push(person);
+            renderList();
+            clearForm();
+        }
+
+        function renderList() {
+            const listContainer = document.getElementById('personList');
+            listContainer.innerHTML = '';
+
+            personList.forEach((person, index) => {
+                const listItem = document.createElement('div');
+                listItem.className = 'list-item';
+
+                listItem.innerHTML = `
+                    <div>
+                        <strong>${person.name}</strong><br>
+                        ${person.phone} - ${person.email}
+                    </div>
+                    <div>
+                        <button class="edit-btn" onclick="editPerson(${index})">Düzenle</button>
+                        <button class="delete-btn" onclick="deletePerson(${index})">Sil</button>
+                    </div>
+                `;
+
+                listContainer.appendChild(listItem);
+            });
+        }
+
+        function deletePerson(index) {
+            personList.splice(index, 1);
+            renderList();
+        }
+
+        function editPerson(index) {
+            const person = personList[index];
+            document.getElementById('name').value = person.name;
+            document.getElementById('phone').value = person.phone;
+            document.getElementById('email').value = person.email;
+
+            deletePerson(index);
+        }
+
+        function clearForm() {
+            document.getElementById('name').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('email').value = '';
+        }
+    </script>
+</body>
+</html>
+
